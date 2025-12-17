@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>BAN..KAI/Welcome</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #111827;
+      --muted: #9ca3af;
+      --text: #e6eef8;
+      --accent: #ff7a00;
+      --glass: rgba(255, 255, 255, 0.05);
+      --radius: 12px;
+      --gap: 18px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --muted: #65748b;
+      --text: #0b1320;
+      --accent: #ff5724;
+      --glass: rgba(11, 19, 32, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 40px; transition: background 0.3s; }
+    a { color: inherit; text-decoration: none; }
+    button { border: none; outline: none; background: none; font-family: inherit; color: inherit; }
+
+    /* --- Header --- */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      background: rgba(15, 23, 36, 0.85);
+      [data-theme="light"] & { background: rgba(255, 255, 255, 0.85); }
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--glass);
+    }
+    .logo { display: flex; gap: 12px; align-items: center; cursor: pointer; }
+    .logo .mark { width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #ffb580); display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 14px; }
+    .logo .title { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+    
+    .controls { display: flex; gap: 12px; align-items: center; }
+    .btn { background: var(--glass); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; white-space: nowrap; }
+    .btn:hover { background: rgba(255,255,255,0.1); }
+    [data-theme="light"] .btn:hover { background: rgba(0,0,0,0.05); }
+
+    /* --- Layout & Container --- */
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; min-height: 80vh; }
+    
+    /* --- Filters --- */
+    .filters { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    @media(min-width: 768px) { .filters { flex-direction: row; align-items: center; } }
+    
+    .search { flex: 1; position: relative; }
+    input[type=search] { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--glass); background: var(--card); color: var(--text); font-size: 15px; outline: none; transition: 0.2s; }
+    input[type=search]:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2); }
+    
+    .alphabet { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
+    .alphabet::-webkit-scrollbar { display: none; }
+    .letter { padding: 6px 12px; border-radius: 6px; background: var(--glass); cursor: pointer; font-weight: 600; font-size: 13px; flex-shrink: 0; transition: 0.2s; }
+    .letter.active { background: var(--accent); color: white; }
+
+    /* --- Grid --- */
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media(min-width: 500px) { .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 24px; } }
+
+    .card { background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; height: 100%; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    
+    /* Poster changes */
+    .poster-wrap { position: relative; padding-top: 140%; background: #222; }
+    .poster-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .poster-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+    
+    .meta { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+    .meta h4 { margin: 0 0 4px 0; font-size: 15px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .meta p { margin-top: auto; font-size: 12px; color: var(--muted); }
+
+    /* --- Player View --- */
+    .view-header { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--accent); color: white; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
+    
+    .player-layout { display: flex; flex-direction: column; gap: 24px; }
+    @media(min-width: 1024px) { .player-layout { flex-direction: row; align-items: flex-start; } }
+
+    .main-stage { flex: 1; width: 100%; }
+    .sidebar { width: 100%; }
+    @media(min-width: 1024px) { .sidebar { width: 350px; flex-shrink: 0; position: sticky; top: 90px; } }
+
+    .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+    .video-wrapper video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; outline: none; }
+
+    .anime-details h1 { font-size: 24px; margin-bottom: 8px; }
+    .tags { display: flex; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+    
+    .episodes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+    .ep-box { background: var(--glass); border: 1px solid var(--glass); border-radius: 6px; padding: 10px 0; text-align: center; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+    .ep-box:hover { border-color: var(--accent); }
+    .ep-box.playing { background: var(--accent); color: white; border-color: var(--accent); }
+    
+    /* --- History View --- */
+    .history-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--card); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--glass); cursor: pointer; transition: 0.2s; }
+    .history-item:hover { border-color: var(--accent); transform: translateX(4px); }
+
+    /* --- Utils --- */
+    .hidden { display: none !important; }
+    .muted { color: var(--muted); }
+    
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 600px) {
+      .header { padding: 12px 16px; }
+      .logo .title { display: none; } /* Hide title text on very small screens */
+      .container { padding: 16px; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .poster-wrap { padding-top: 130%; }
+      .meta { padding: 10px; }
+      .meta h4 { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo" id="siteLogo" onclick="navigateTo('home')">
+    <div class="mark">BK</div>
+    <div class="title">BAN..KAI</div>
+  </div>
+  <div class="controls">
+    <div class="btn" onclick="navigateTo('history')">History</div>
+    <div class="btn" id="themeToggle">🌙</div>
+  </div>
+</div>
+
+<main class="container" id="app">
+  
+  <section id="view-home">
+    <div class="filters">
+      <div class="search">
+        <input type="search" id="searchInput" placeholder="Search anime titles..." autocomplete="off"/>
+      </div>
+      <div class="alphabet" id="alphabet"></div>
+    </div>
+    <div class="grid" id="animeGrid"></div>
+  </section>
+
+  <section id="view-player" class="hidden">
+    <div class="view-header">
+      <div class="back-btn" onclick="window.history.back()">← Back</div>
+    </div>
+    
+    <div class="player-layout">
+      <div class="main-stage">
+        <div class="video-wrapper">
+          <video id="videoPlayer" controls playsinline poster=""></video>
+        </div>
+        <div class="anime-details">
+          <h1 id="pTitle">Title</h1>
+          <div class="tags">
+            <span id="pYear">2023</span> • <span id="pEpCount">24 Eps</span>
+          </div>
+          <p id="pDesc" class="muted">Description goes here...</p>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="card" style="padding: 16px;">
+          <h4 style="margin-bottom: 12px;">Episodes</h4>
+          <div class="episodes-grid" id="episodesGrid"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="view-history" class="hidden">
+    <div class="view-header">
+      <div class="back-btn" onclick="window.history.back()">← Back</div>
+      <h2 style="margin-left: 12px">Watch History</h2>
+    </div>
+    <div id="historyList"></div>
+    <button class="btn" style="margin-top: 20px; color: #ef4444; border: 1px solid rgba(239,68,68,0.2)" id="clearHistoryBtn">Clear All History</button>
+  </section>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- DATA ---
+  // Public domain sample video used for playable episodes
+  const SAMPLE_SRC = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  
+  // ================= ADDED (LOCAL EP-1 MAP) =================
+  const LOCAL_EP1_MAP = {
+    n1:'./videos/naruto_ep1.mp4',
+    o2:'./videos/onepiece_ep1.mp4',
+    a3:'./videos/aot_ep1.mp4',
+    c4:'./videos/chainsawman_ep1.mp4',
+    p5:'./videos/pokemon_ep1.mp4',
+    d6:'./videos/dbz_ep1.mp4',
+    b7:'./videos/bleach_ep1.mp4',
+    t8:'./videos/deathnote_ep1.mp4'
+  };
+  // ===========================================================
+  
+  const ANIME_DB = [
+    {
+      id:'n1', 
+      title:'Naruto', 
+      year:2002, 
+      desc:'A young ninja dreams of becoming the Hokage.', 
+      poster:'./images/naruto.jpeg',
+      total_eps: 220
+    },
+    {
+      id:'o2', 
+      title:'One Piece', 
+      year:1999, 
+      desc:'Luffy sets out on a journey to find the One Piece treasure.', 
+      poster:'./images/one piece.jpeg',
+      total_eps: 1100
+    },
+    {
+      id:'a3', 
+      title:'Attack on Titan', 
+      year:2013, 
+      desc:'Humanity fights for survival against man-eating giants.', 
+      poster:'./images/Attack on titan.jpeg', // Path relative to your HTML file,
+      total_eps: 94
+    },
+    {
+      id:'c4', 
+      title:'Chainsaw Man', 
+      year:2022, 
+      desc:'Denji merges with his dog Pochita to become the Chainsaw Man.', 
+      poster:'./images/chainsawman.jpeg',
+      total_eps: 12
+    },
+    {
+      id:'p5', 
+      title:'Pokémon', 
+      year:1997, 
+      desc:'Ash Ketchum aims to be the best Pokémon trainer in the world.', 
+      poster:'./images/pokemon.jpeg',
+      total_eps: 1200
+    },
+    {
+      id:'d6', 
+      title:'Dragon Ball Z', 
+      year:1989, 
+      desc:'Goku and the Z Fighters defend Earth from powerful threats.', 
+      poster:'./images/dragonballz.jpeg',
+      total_eps: 291
+    },
+    {
+      id:'b7', 
+      title:'Bleach', 
+      year:2004, 
+      desc:'Ichigo Kurosaki gains the powers of a Soul Reaper.', 
+      poster:'./images/bleach.jpeg',
+      total_eps: 366
+    },
+    {
+      id:'t8', 
+      title:'Death Note', 
+      year:2006, 
+      desc:'A student finds a notebook that allows him to kill anyone.', 
+      poster:'./images/deathnote.jpeg',
+      total_eps: 37
+    }
+  ];
+
+  // Modified logic: Generate total_eps for each anime, only first 2 are playable
+  ANIME_DB.forEach(a => {
+    // Ensure total_eps exists, default to 24 if missing
+    const total = a.total_eps || 24; 
+    
+    a.episodes = Array.from({length: total}, (_, i) => ({
+      no: i + 1,
+      title: `Episode ${i + 1}`,
+      // Only first 2 are playable (i < 2)
+      src: (i < 2) ? SAMPLE_SRC : null
+    }));
+  });
+  
+  // ================= ADDED OVERRIDE =================
+  ANIME_DB.forEach(a=>{
+    if(LOCAL_EP1_MAP[a.id]) {
+      a.episodes[0].src = LOCAL_EP1_MAP[a.id];
+    }
+  });
+  // =================================================
+  
+  // ================= ADDED LOGO HOVER AUDIO =================
+  const HOVER_AUDIOS=[
+    './audio/audio1.mp3',
+    './audio/audio2.mp3',
+    './audio/audio3.mp3',
+    './audio/audio4.mp3',
+    './audio/audio5.mp3'
+  ];
+
+  const logo=document.getElementById('siteLogo');
+  const hoverAudio=new Audio();
+
+  logo.addEventListener('mouseenter',()=>{
+    const r=HOVER_AUDIOS[Math.floor(Math.random()*HOVER_AUDIOS.length)];
+    hoverAudio.src=r;
+    hoverAudio.volume=0.6;
+    hoverAudio.play().catch((e)=>console.log('Audio play failed:', e));
+  });
+
+  logo.addEventListener('mouseleave',()=>{
+    hoverAudio.pause();
+    hoverAudio.currentTime = 0;
+  });
+  // =========================================================
+  
+  // --- STATE & REFS ---
+  const state = {
+    filter: 'All',
+    search: '',
+    theme: localStorage.getItem('as_theme') || 'dark'
+  };
+
+  const els = {
+    views: {
+      home: document.getElementById('view-home'),
+      player: document.getElementById('view-player'),
+      history: document.getElementById('view-history')
+    },
+    grid: document.getElementById('animeGrid'),
+    alphabet: document.getElementById('alphabet'),
+    search: document.getElementById('searchInput'),
+    player: {
+      video: document.getElementById('videoPlayer'),
+      title: document.getElementById('pTitle'),
+      desc: document.getElementById('pDesc'),
+      year: document.getElementById('pYear'),
+      count: document.getElementById('pEpCount'),
+      grid: document.getElementById('episodesGrid')
+    },
+    historyList: document.getElementById('historyList'),
+    themeBtn: document.getElementById('themeToggle')
+  };
+
+  // --- ROUTER SYSTEM (Ensuring global access for 'onclick' attributes) ---
+  
+  // FIX: Explicitly define navigateTo on the window object here
+  window.navigateTo = function(viewName, params = null) {
+    const url = viewName === 'home' ? '/' : `#${viewName}`;
+    history.pushState({ view: viewName, params }, '', url);
+    renderView(viewName, params);
+  };
+
+  window.addEventListener('popstate', (e) => {
+    if (e.state) {
+      renderView(e.state.view, e.state.params);
+    } else {
+      renderView('home');
+    }
+  });
+
+  function renderView(viewName, params) {
+    // Hide all views first
+    Object.values(els.views).forEach(el => el.classList.add('hidden'));
+    
+    // Pause video if leaving player view
+    if (viewName !== 'player' && els.player.video) els.player.video.pause();
+
+    if (viewName === 'home') {
+      els.views.home.classList.remove('hidden');
+      renderHome();
+    } 
+    else if (viewName === 'player' && params) {
+      els.views.player.classList.remove('hidden');
+      loadAnimePlayer(params.id, params.ep);
+    }
+    else if (viewName === 'history') {
+      els.views.history.classList.remove('hidden');
+      renderHistory();
+    }
+    
+    window.scrollTo(0,0);
+  }
+
+  // --- HOME LOGIC ---
+  
+  const LETTERS = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+  LETTERS.forEach(l => {
+    const d = document.createElement('div');
+    d.className = 'letter';
+    d.textContent = l;
+    d.onclick = () => { state.filter = l; renderHome(); };
+    els.alphabet.appendChild(d);
+  });
+
+  els.search.addEventListener('input', (e) => {
+    state.search = e.target.value.toLowerCase();
+    renderHome();
+  });
+
+  function renderHome() {
+    Array.from(els.alphabet.children).forEach(c => {
+      c.classList.toggle('active', c.textContent === state.filter);
+    });
+
+    els.grid.innerHTML = '';
+    
+    const filtered = ANIME_DB.filter(a => {
+      const matchSearch = a.title.toLowerCase().includes(state.search);
+      const matchLetter = state.filter === 'All' || a.title.toUpperCase().startsWith(state.filter);
+      return matchSearch && matchLetter;
+    });
+
+    if (filtered.length === 0) {
+      els.grid.innerHTML = `<div class="muted" style="grid-column: 1/-1; text-align:center; padding: 40px">No anime found.</div>`;
+      return;
+    }
+
+    filtered.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      
+      // Use the poster URL (local or absolute)
+      card.innerHTML = `
+        <div class="poster-wrap">
+          <img src="${a.poster}" class="poster-img" alt="${a.title} Poster">
+          <div class="poster-overlay"></div>
+        </div>
+        <div class="meta">
+          <h4>${a.title}</h4>
+          <p>${a.year}</p>
+        </div>
+      `;
+      card.onclick = () => navigateTo('player', { id: a.id });
+      els.grid.appendChild(card);
+    });
+  }
+
+  // --- PLAYER LOGIC ---
+
+  function loadAnimePlayer(animeId, startEpNo = 1) {
+    const anime = ANIME_DB.find(x => x.id === animeId);
+    if (!anime) return navigateTo('home');
+
+    // Set Info
+    els.player.title.textContent = anime.title;
+    els.player.desc.textContent = anime.desc;
+    els.player.year.textContent = anime.year;
+    els.player.count.textContent = `${anime.episodes.length} Episodes`;
+    els.player.video.poster = anime.poster; // Use the poster as the video background placeholder
+
+    // Render Episode Grid
+    els.player.grid.innerHTML = '';
+    anime.episodes.forEach(ep => {
+      const btn = document.createElement('div');
+      btn.className = 'ep-box';
+      btn.textContent = ep.no;
+      if (!ep.src) {
+        btn.style.opacity = '0.5';
+        btn.title = 'Not Available';
+      }
+      btn.onclick = () => {
+        if (!ep.src) { alert('Episode not available in demo'); return; }
+        playVideo(anime, ep);
+      };
+      els.player.grid.appendChild(btn);
+    });
+
+    // Auto play requested episode or first available
+    const epToPlay = anime.episodes.find(e => e.no === startEpNo && e.src) || anime.episodes.find(e => e.src);
+    if (epToPlay) playVideo(anime, epToPlay);
+  }
+
+  function playVideo(anime, episode) {
+    els.player.video.src = episode.src;
+    els.player.video.play().catch(e => console.log("Auto-play prevented"));
+    
+    Array.from(els.player.grid.children).forEach(btn => {
+      btn.classList.toggle('playing', parseInt(btn.textContent) === episode.no);
+    });
+
+    addToHistory({
+      animeId: anime.id,
+      title: anime.title,
+      ep: episode.no,
+      timestamp: Date.now()
+    });
+  }
+
+  // --- HISTORY LOGIC ---
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem('as_history') || '[]');
+  }
+
+  function addToHistory(item) {
+    let hist = getHistory();
+    hist = hist.filter(h => h.animeId !== item.animeId);
+    hist.unshift(item);
+    localStorage.setItem('as_history', JSON.stringify(hist.slice(0, 50)));
+  }
+
+  function renderHistory() {
+    const hist = getHistory();
+    els.historyList.innerHTML = '';
+    
+    if (hist.length === 0) {
+      els.historyList.innerHTML = '<div class="muted">No watch history yet.</div>';
+      return;
+    }
+
+    hist.forEach(h => {
+      const el = document.createElement('div');
+      el.className = 'history-item';
+      el.innerHTML = `
+        <div>
+          <div style="font-weight:700">${h.title}</div>
+          <div class="muted" style="font-size:13px">Episode ${h.ep} • ${new Date(h.timestamp).toLocaleDateString()}</div>
+        </div>
+        <div>▶</div>
+      `;
+      el.onclick = () => navigateTo('player', { id: h.animeId, ep: h.ep });
+      els.historyList.appendChild(el);
+    });
+  }
+
+  document.getElementById('clearHistoryBtn').onclick = () => {
+    localStorage.removeItem('as_history');
+    renderHistory();
+  };
+
+  // --- THEME LOGIC ---
+  function setTheme(t) {
+    state.theme = t;
+    document.documentElement.setAttribute('data-theme', t);
+    els.themeBtn.textContent = t === 'light' ? '☀️' : '🌙';
+    localStorage.setItem('as_theme', t);
+  }
+  
+  els.themeBtn.onclick = () => setTheme(state.theme === 'light' ? 'dark' : 'light');
+  setTheme(state.theme);
+
+  // --- INIT (Initial view load) ---
+  function init() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'history') {
+        // If history view is requested on load, navigate there
+        renderView('history');
+    } else {
+        // Otherwise, render the home view
+        renderView('home');
+    }
+  }
+
+  init();
+
+});
+</script>
+</body>
+</html>
